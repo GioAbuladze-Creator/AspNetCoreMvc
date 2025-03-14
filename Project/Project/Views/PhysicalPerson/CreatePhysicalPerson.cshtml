@@ -1,0 +1,116 @@
+﻿@using Shared.Commands;
+@model CreatePersonCommandDto;
+@{
+	ViewData["Title"] = "Create Person";
+	Layout = "~/Views/Shared/_PhysicalPersonLayout.cshtml";
+}
+<div class="physical-person-container">
+	<div class="physical-person-box">
+		<h2 class="text-center mb-4">Create Physical Person</h2>
+		<form asp-action="CreatePhysicalPerson" method="post">
+			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+			<div class="d-flex mb-3">
+				<div class="flex-grow-1 me-2">
+					<label asp-for="Firstname" class="form-label"></label>
+					<input asp-for="Firstname" class="form-control" />
+					<span asp-validation-for="Firstname" class="text-danger"></span>
+				</div>
+				<div class="flex-grow-1 ms-2">
+					<label asp-for="Lastname" class="form-label"></label>
+					<input asp-for="Lastname" class="form-control" />
+					<span asp-validation-for="Lastname" class="text-danger"></span>
+				</div>
+			</div>
+			<div class="mb-3">
+				<label asp-for="Gender" class="form-label"></label>
+				<select asp-for="Gender" class="form-control">
+					<option value="Male">Male</option>
+					<option value="Female">Female</option>
+				</select>
+				<span asp-validation-for="Gender" class="text-danger"></span>
+			</div>
+			<div class="mb-3">
+				<label asp-for="PersonalId" class="form-label"></label>
+				<input asp-for="PersonalId" class="form-control" />
+				<span asp-validation-for="PersonalId" class="text-danger"></span>
+			</div>
+			<div class="mb-3">
+				<label asp-for="BirthDate" class="form-label"></label>
+				<input asp-for="BirthDate" type="date" class="form-control" />
+				<span asp-validation-for="BirthDate" class="text-danger"></span>
+			</div>
+			<div class="mb-3">
+				<label asp-for="City" class="form-label"></label>
+				<input asp-for="City.Name" class="form-control" />
+				<span asp-validation-for="City.Name" class="text-danger"></span>
+			</div>
+			<div id="phoneNumbersContainer">
+				<label class="form-label">Phone Numbers</label>
+				@for (var i = 0; i < Model.PhoneNumbers.Count; i++)
+				{
+					<div class="phone-number-group d-flex align-items-center mb-2">
+						<input type="hidden" name="PhoneNumbers.Index" value="@i" />
+						<select asp-for="PhoneNumbers[i].Type" class="form-control me-2">
+							<option value="1">Home</option>
+							<option value="2">Work</option>
+							<option value="3">Mobile</option>
+						</select>
+						<input asp-for="PhoneNumbers[i].Number" class="form-control me-2" placeholder="Enter phone number" />
+						<button type="button" class="btn btn-danger remove-phone-number">−</button>
+					</div>
+					<span asp-validation-for="PhoneNumbers[i].Number" class="text-danger"></span>
+				}
+			</div>
+			<button type="button" id="addPhoneNumber" class="btn btn-primary mb-3">+ Add Phone</button>
+
+			<input type="submit" value="Done" class="btn btn-success w-100 p-2" />
+
+			<div class="text-center">
+				<a asp-controller="PhysicalPerson" asp-action="GetAllPersons" class="text-decoration-none mt-3">Back</a>
+			</div>
+		</form>
+	</div>
+</div>
+@section Scripts {
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
+	@if (TempData["Message"] != null)
+	{
+		<script type="text/javascript">
+			window.onload = function () {
+				alert(@Html.Raw(Json.Serialize(TempData["Message"])));
+			};
+		</script>
+	}
+	<script>
+		let phoneIndex = @Model.PhoneNumbers.Count;
+
+		document.getElementById('addPhoneNumber').addEventListener('click', function () {
+			let container = document.getElementById('phoneNumbersContainer');
+
+			let div = document.createElement('div');
+			div.classList.add('phone-number-group', 'd-flex', 'align-items-center', 'mb-2');
+
+			div.innerHTML = `
+				<input type="hidden" name="PhoneNumbers.Index" value="${phoneIndex}" />
+				<select name="PhoneNumbers[${phoneIndex}].Type" class="form-control me-2">
+					<option value="1">Home</option>
+					<option value="2">Work</option>
+					<option value="3">Mobile</option>
+				</select>
+				<input name="PhoneNumbers[${phoneIndex}].Number" class="form-control me-2" placeholder="Enter phone number" />
+				<button type="button" class="btn btn-danger remove-phone-number">−</button>
+			`;
+
+			container.appendChild(div);
+			phoneIndex++;
+		});
+
+		document.getElementById('phoneNumbersContainer').addEventListener('click', function (event) {
+			if (event.target.classList.contains('remove-phone-number')) {
+				event.target.parentElement.remove();
+			}
+		});
+	</script>
+}

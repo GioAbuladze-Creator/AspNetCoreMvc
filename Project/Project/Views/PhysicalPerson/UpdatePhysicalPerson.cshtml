@@ -1,0 +1,124 @@
+﻿@using Shared.Commands;
+@model UpdatePersonCommandDto;
+@{
+	ViewData["Title"] = "Update Person";
+	Layout = "~/Views/Shared/_PhysicalPersonLayout.cshtml";
+}
+<div class="physical-person-container">
+	<div class="physical-person-box">
+		<h2 class="text-center mb-4">Update Physical Person</h2>
+		<form asp-action="UpdatePhysicalPerson" method="post">
+			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+			<div class="mb-3">
+				<label asp-for="Id" class="form-label"></label>
+				<input asp-for="Id" class="form-control" readonly />
+				<span asp-validation-for="Id" class="text-danger"></span>
+			</div>
+			<div class="d-flex mb-3">
+				<div class="flex-grow-1 me-2">
+					<label asp-for="Firstname" class="form-label"></label>
+					<input asp-for="Firstname" class="form-control" />
+					<span asp-validation-for="Firstname" class="text-danger"></span>
+				</div>
+				<div class="flex-grow-1 ms-2">
+					<label asp-for="Lastname" class="form-label"></label>
+					<input asp-for="Lastname" class="form-control" />
+					<span asp-validation-for="Lastname" class="text-danger"></span>
+				</div>
+			</div>
+			<div class="mb-3">
+				<label asp-for="Gender" class="form-label"></label>
+				<select asp-for="Gender" class="form-control">
+					<option value="Male">Male</option>
+					<option value="Female">Female</option>
+				</select>
+				<span asp-validation-for="Gender" class="text-danger"></span>
+			</div>
+			<div class="mb-3">
+				<label asp-for="PersonalId" class="form-label"></label>
+				<input asp-for="PersonalId" class="form-control" />
+				<span asp-validation-for="PersonalId" class="text-danger"></span>
+			</div>
+			<div class="mb-3">
+				<label asp-for="BirthDate" class="form-label"></label>
+				<input asp-for="BirthDate" type="date" class="form-control" />
+				<span asp-validation-for="BirthDate" class="text-danger"></span>
+			</div>
+			<div class="mb-3">
+				<label asp-for="City" class="form-label"></label>
+				<input asp-for="City" class="form-control" />
+				<span asp-validation-for="City" class="text-danger"></span>
+			</div>
+
+			<div id="phoneNumbersContainer">
+				<label class="form-label">Phone Numbers</label>
+				@for (var i = 0; i < Model.PhoneNumbers.Count; i++)
+				{
+					<div class="phone-number-group d-flex align-items-center mb-2">
+						<input type="hidden" name="PhoneNumbers.Index" value="@i" />
+						<select asp-for="PhoneNumbers[i].Type" class="form-control me-2">
+							<option value="1">Home</option>
+							<option value="2">Work</option>
+							<option value="3">Mobile</option>
+						</select>
+						<input asp-for="PhoneNumbers[i].Number" class="form-control me-2" placeholder="Enter phone number" />
+						<button type="button" class="btn btn-danger remove-phone-number">−</button>
+					</div>
+					<span asp-validation-for="PhoneNumbers[i].Number" class="text-danger"></span>
+				}
+			</div>
+			<button type="button" id="addPhoneNumber" class="btn btn-primary mb-3">+ Add Phone</button>
+
+			<div class="d-flex justify-content-center">
+				<input type="submit" value="Save" class="btn btn-success w-50 p-2" />
+			</div>
+		</form>
+
+		<form asp-action="DeletePhysicalPerson" method="post" class="d-flex justify-content-center" onsubmit="return confirm('Are you sure you want to delete this person?');">
+			<input type="hidden" name="personId" value="@Model.Id" />
+			<button type="submit" class="btn btn-danger w-50 p-2">Delete</button>
+		</form>
+
+		<div class="text-center">
+			<a asp-controller="PhysicalPerson" asp-action="GetAllPersons" class="text-decoration-none mt-3">Back</a>
+		</div>
+	</div>
+</div>
+
+@section Scripts {
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
+
+	<script>
+		let phoneIndex = @Model.PhoneNumbers.Count;
+
+		document.getElementById('addPhoneNumber').addEventListener('click', function () {
+			let container = document.getElementById('phoneNumbersContainer');
+
+			let div = document.createElement('div');
+			div.classList.add('phone-number-group', 'd-flex', 'align-items-center', 'mb-2');
+
+			div.innerHTML = `
+				<input type="hidden" name="PhoneNumbers.Index" value="${phoneIndex}" />
+				<select name="PhoneNumbers[${phoneIndex}].Type" class="form-control me-2">
+					<option value="1">Home</option>
+					<option value="2">Work</option>
+					<option value="3">Mobile</option>
+				</select>
+				<input name="PhoneNumbers[${phoneIndex}].Number" class="form-control me-2" placeholder="Enter phone number" />
+				<button type="button" class="btn btn-danger remove-phone-number">−</button>
+			`;
+
+			container.appendChild(div);
+			phoneIndex++;
+		});
+
+		document.getElementById('phoneNumbersContainer').addEventListener('click', function (event) {
+			if (event.target.classList.contains('remove-phone-number')) {
+				event.target.parentElement.remove();
+			}
+		});
+	</script>
+
+}

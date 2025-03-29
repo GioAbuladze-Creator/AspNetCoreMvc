@@ -1,0 +1,138 @@
+﻿@using Shared.Models.DataTransferObjects
+@model List<PersonWithRelationsDto>
+@{
+	ViewData["Title"] = "Person List";
+	Layout = "~/Views/Shared/_PhysicalPersonLayout.cshtml";
+}
+<div class="physical-person-container">
+	<div class="physical-person-box table-container">
+		<div class="search-container">
+			<input type="text" id="searchQuery" class="form-control" placeholder="Search..." autocomplete="off" />
+		</div>
+
+		<table class="table">
+			<thead class="thead-dark">
+				<tr>
+					<th scope="col">#</th>
+					<th scope="col">First</th>
+					<th scope="col">Last</th>
+					<th scope="col">Birth Date</th>
+					<th scope="col">Personal ID</th>
+					<th scope="col">Gender</th>
+					<th scope="col">City</th>
+					<th scope="col">Numbers</th>
+					<th scope="col" colspan="2">Options</th>
+					<td>
+						<a asp-action="CreatePhysicalPerson" class="btn btn-primary text-center">+</a>
+					</td>
+				</tr>
+			</thead>
+			<tbody id="personTableBody">
+				@if (Model == null || !Model.Any())
+				{
+					<tr class="no-results-row">
+						<td colspan="9" class="text-center">No results found</td>
+					</tr>
+				}
+				else
+				{
+					@foreach (var person in Model)
+					{
+						<tr class="person-row">
+							<th scope="row">@person.Id</th>
+							<td>@person.Firstname</td>
+							<td>@person.Lastname</td>
+							<td>@person.BirthDate.ToString("dd/MM/yyyy")</td>
+							<td>@person.PersonalId</td>
+							<td>@person.Gender</td>
+							<td>@person.City.Name</td>
+							<td>@person.PhoneNumbers.Count</td>
+							<td>
+								<div class="options-container">
+									<a asp-action="UpdatePhysicalPerson" asp-route-id="@person.Id" class="link-secondary text-decoration-none">Edit</a> |
+									<a asp-action="Profile" asp-route-id="@person.Id" class="text-decoration-none">Profile</a>
+								</div>
+							</td>
+						</tr>
+					}
+				}
+			</tbody>
+		</table>
+
+	</div>
+</div>
+
+@section Scripts {
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
+	@if (TempData["Message"] != null)
+	{
+		<script type="text/javascript">
+			window.onload = function () {
+				alert(@Html.Raw(Json.Serialize(TempData["Message"])));
+			};
+		</script>
+	}
+	<script>
+		let debounceTimer;
+
+		document.getElementById('searchQuery').addEventListener('input', function () {
+			clearTimeout(debounceTimer);
+			debounceTimer = setTimeout(function () {
+				performSearch();
+			}, 500);
+		});
+
+		function performSearch() {
+			let query = document.getElementById('searchQuery').value.trim();
+
+
+			let searchQuery = query === '' ? ' ' : query;
+
+			fetch(`/PhysicalPerson/quickSearch/${searchQuery}/1/100`)
+				.then(response => {
+					if (!response.ok) {
+						throw new Error('Network response was not ok');
+					}
+					return response.json();
+				})
+				.then(data => {
+					let tableBody = document.getElementById('personTableBody');
+					tableBody.innerHTML = '';
+
+					if (data && data.length > 0) {
+						data.forEach(person => {
+							let row = document.createElement('tr');
+							row.classList.add('person-row');
+							row.innerHTML = `
+								<th scope="row">${person.id}</th>
+								<td>${person.firstname}</td>
+								<td>${person.lastname}</td>
+								<td>${new Date(person.birthDate).toLocaleDateString()}</td>
+								<td>${person.personalId}</td>
+								<td>${person.gender}</td>
+								<td>${person.city.name}</td>
+								<td>${person.phoneNumbers.length}</td>
+								<td>
+									<div class="options-container">
+										<a href="/PhysicalPerson/UpdatePhysicalPerson?id=${person.id}" class="link-secondary text-decoration-none">Edit</a> |
+										<a href="/PhysicalPerson/Profile?id=${person.id}" class="text-decoration-none">Profile</a>
+									</div>
+								</td>
+							`;
+							tableBody.appendChild(row);
+						});
+					} else {
+						let row = document.createElement('tr');
+						row.classList.add('no-results-row');
+						row.innerHTML = '<td colspan="9" class="text-center">No results found</td>';
+						tableBody.appendChild(row);
+					}
+				})
+				.catch(error => {
+					console.error('Error:', error);
+				});
+		}
+	</script>
+}

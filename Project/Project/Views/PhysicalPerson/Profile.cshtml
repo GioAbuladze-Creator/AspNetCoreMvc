@@ -1,0 +1,224 @@
+﻿@using Shared.Models.DataTransferObjects
+@model PersonWithRelationsDto
+
+@{
+	ViewData["Title"] = "Profile";
+	Layout = "~/Views/Shared/_PhysicalPersonLayout.cshtml";
+}
+
+<div class="d-flex flex-column physical-person-container container mt-4 profile-container">
+	<div class="row justify-content-center mb-4">
+		<div class="col-12 text-center">
+			<h2>@Model.Firstname @Model.Lastname</h2>
+		</div>
+	</div>
+
+	<div class="profile-picture-container">
+		<div class="profile-picture">
+			@if (!string.IsNullOrEmpty(Model.ImagePath))
+			{
+				<img src="~/Resources/@Model.ImagePath" alt="Profile Image" class="profile-img" />
+			}
+			else
+			{
+				<span class="no-image-text">No Image</span>
+			}
+
+			<div class="profile-overlay">
+				<div class="profile-buttons">
+					<form method="post" enctype="multipart/form-data" asp-action="AddProfilePicture" asp-route-personId="@Model.Id">
+						<input type="file" name="image" id="imageUpload" style="display: none;" onchange="this.form.submit()" />
+						<button type="button" class="btn btn-primary btn-sm" onclick="document.getElementById('imageUpload').click()">
+							<i class="fas fa-camera"></i> Change
+						</button>
+					</form>
+					@if (!string.IsNullOrEmpty(Model.ImagePath))
+					{
+						<form method="post" asp-action="RemoveProfilePicture" asp-route-personId="@Model.Id">
+							<button type="submit" class="btn btn-danger btn-sm">
+								<i class="fas fa-trash"></i> Remove
+							</button>
+						</form>
+					}
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row mb-4">
+		<div class="col-12">
+			<div class="card shadow-sm">
+				<div class="card-header">
+					<h4>Personal Information</h4>
+				</div>
+				<div class="card-body">
+					<table class="table table-bordered">
+						<tbody>
+							<tr>
+								<th scope="row">ID</th>
+								<td>@Model.Id</td>
+							</tr>
+							<tr>
+								<th scope="row">First Name</th>
+								<td>@Model.Firstname</td>
+							</tr>
+							<tr>
+								<th scope="row">Last Name</th>
+								<td>@Model.Lastname</td>
+							</tr>
+							<tr>
+								<th scope="row">Gender</th>
+								<td>@Model.Gender</td>
+							</tr>
+							<tr>
+								<th scope="row">Personal ID</th>
+								<td>@Model.PersonalId</td>
+							</tr>
+							<tr>
+								<th scope="row">Birth Date</th>
+								<td>@Model.BirthDate.ToString("dd/MM/yyyy")</td>
+							</tr>
+							<tr>
+								<th scope="row">City</th>
+								<td>@(string.IsNullOrEmpty(Model.City?.Name) ? "Not Provided" : Model.City?.Name)</td>
+							</tr>
+							<tr>
+								<th scope="row">Phone Numbers</th>
+								<td>
+									@if (Model.PhoneNumbers != null && Model.PhoneNumbers.Any())
+									{
+										<ul class="list-unstyled">
+											@foreach (var phone in Model.PhoneNumbers)
+											{
+												<li>@phone.Type: @phone.Number</li>
+											}
+										</ul>
+									}
+									else
+									{
+										<span>No phone numbers available</span>
+									}
+								</td>
+							</tr>
+						</tbody>
+					</table>
+
+					<h4 class="card-title mt-4">Relations</h4>
+					<div class="relations">
+						<h5>Related From Person Data:</h5>
+						@if (Model.RelatedFromPersonData.Any())
+						{
+							<ul class="list-group">
+								@foreach (var relation in Model.RelatedFromPersonData)
+								{
+									<li class="list-group-item">@relation.Value (ID: @relation.Key)</li>
+								}
+							</ul>
+						}
+						else
+						{
+							<p>No related data available.</p>
+						}
+
+						<h5>Related To Person Data:</h5>
+						@if (Model.RelatedToPersonData.Any())
+						{
+							<ul class="list-group">
+								@foreach (var relation in Model.RelatedToPersonData)
+								{
+									<li class="list-group-item">@relation.Value (ID: @relation.Key)</li>
+								}
+							</ul>
+						}
+						else
+						{
+							<p>No related data available.</p>
+						}
+						<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addRelationModal">
+							<i class="fas fa-plus"></i> Add Relation
+						</button>
+					</div>
+					<div class="text-center">
+						<a asp-controller="PhysicalPerson" asp-action="GetAllPersons" class="text-decoration-none mt-3">Back</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="addRelationModal" tabindex="-1" aria-labelledby="addRelationModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="addRelationModalLabel">Add Relation</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<form id="addRelationForm" method="post" enctype="multipart/form-data" asp-action="AddRelation" asp-route-personId="@Model.Id">
+					<input type="hidden" name="fromId" value="@Model.Id" />
+
+					<div class="mb-3">
+						<label for="fromId" class="form-label">From Person ID</label>
+						<input type="number" class="form-control" id="fromIdDisplay" value="@Model.Id" readonly />
+					</div>
+
+					<div class="mb-3">
+						<label for="toId" class="form-label">Related To Person ID</label>
+						<input type="number" class="form-control" id="toId" name="toId" />
+						<span id="toIdError" class="text-danger" style="display:none;">Wrong ID</span>
+					</div>
+
+					<div class="mb-3">
+						<label for="relationType" class="form-label">Relation Type</label>
+						<select class="form-control" id="relationType" name="relationType">
+							<option value="1">Colleague</option>
+							<option value="2">Friend</option>
+							<option value="3">Relative</option>
+							<option value="4">Other</option>
+						</select>
+					</div>
+
+					<button type="submit" class="btn btn-primary">Add Relation</button>
+					
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+@section Scripts {
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
+	<script>
+		document.getElementById("addRelationForm").onsubmit = function(event) {
+			event.preventDefault(); 
+
+			const toId = document.getElementById("toId").value;
+			const toIdError = document.getElementById("toIdError");
+
+			if (toId === "" || isNaN(toId) || parseInt(toId) <= 0) {
+				toIdError.style.display = "inline";
+			} else {
+				toIdError.style.display = "none";
+				
+				const formData = new FormData(document.getElementById("addRelationForm"));
+				fetch('@Url.Action("AddRelation", "PhysicalPerson")', {
+					method: 'POST',
+					body: formData
+				})
+				.then(response => response.json())
+				.then(data => {
+					if (data.success) {
+						alert(data.message);
+						location.reload(); 
+					} else {
+						alert(data.message);
+					}
+				})
+				.catch(error => console.error("Error:", error));
+			}
+		};
+	</script>
+}

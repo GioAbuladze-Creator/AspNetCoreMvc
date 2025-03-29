@@ -1,0 +1,598 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Project",
+    "version": "1.0"
+  },
+  "paths": {
+    "/PhysicalPerson/CreatePhysicalPerson": {
+      "post": {
+        "tags": [
+          "PhysicalPerson"
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "Firstname": {
+                    "maxLength": 50,
+                    "minLength": 2,
+                    "pattern": "^(?:[A-Za-z]+|[ა-ჰ]+)$",
+                    "type": "string"
+                  },
+                  "Lastname": {
+                    "maxLength": 50,
+                    "minLength": 2,
+                    "pattern": "^(?:[A-Za-z]+|[ა-ჰ]+)$",
+                    "type": "string"
+                  },
+                  "Gender": {
+                    "$ref": "#/components/schemas/Gender"
+                  },
+                  "PersonalId": {
+                    "maxLength": 11,
+                    "minLength": 11,
+                    "pattern": "^[0-9]+$",
+                    "type": "string"
+                  },
+                  "BirthDate": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "City.Name": {
+                    "maxLength": 50,
+                    "minLength": 2,
+                    "pattern": "^(?:[A-Za-z]+)$",
+                    "type": "string"
+                  },
+                  "PhoneNumbers": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/PhoneNumberDto"
+                    }
+                  }
+                }
+              },
+              "encoding": {
+                "Firstname": {
+                  "style": "form"
+                },
+                "Lastname": {
+                  "style": "form"
+                },
+                "Gender": {
+                  "style": "form"
+                },
+                "PersonalId": {
+                  "style": "form"
+                },
+                "BirthDate": {
+                  "style": "form"
+                },
+                "City.Name": {
+                  "style": "form"
+                },
+                "PhoneNumbers": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/PhysicalPerson/DeletePhysicalPerson/{personId}": {
+      "post": {
+        "tags": [
+          "PhysicalPerson"
+        ],
+        "parameters": [
+          {
+            "name": "personId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/PhysicalPerson/UpdatePhysicalPerson": {
+      "post": {
+        "tags": [
+          "PhysicalPerson"
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "Id"
+                ],
+                "type": "object",
+                "properties": {
+                  "Id": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "Firstname": {
+                    "maxLength": 50,
+                    "minLength": 2,
+                    "pattern": "^(?:[A-Za-z]+|[ა-ჰ]+)$",
+                    "type": "string"
+                  },
+                  "Lastname": {
+                    "maxLength": 50,
+                    "minLength": 2,
+                    "pattern": "^(?:[A-Za-z]+|[ა-ჰ]+)$",
+                    "type": "string"
+                  },
+                  "Gender": {
+                    "$ref": "#/components/schemas/Gender"
+                  },
+                  "PersonalId": {
+                    "maxLength": 11,
+                    "minLength": 11,
+                    "pattern": "^[0-9]+$",
+                    "type": "string"
+                  },
+                  "BirthDate": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "ImagePath": {
+                    "type": "string"
+                  },
+                  "City": {
+                    "type": "string"
+                  },
+                  "PhoneNumbers": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/UpdatePhoneNumberDto"
+                    }
+                  }
+                }
+              },
+              "encoding": {
+                "Id": {
+                  "style": "form"
+                },
+                "Firstname": {
+                  "style": "form"
+                },
+                "Lastname": {
+                  "style": "form"
+                },
+                "Gender": {
+                  "style": "form"
+                },
+                "PersonalId": {
+                  "style": "form"
+                },
+                "BirthDate": {
+                  "style": "form"
+                },
+                "ImagePath": {
+                  "style": "form"
+                },
+                "City": {
+                  "style": "form"
+                },
+                "PhoneNumbers": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/PhysicalPerson/AddRelation": {
+      "post": {
+        "tags": [
+          "PhysicalPerson"
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "fromId": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "toId": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "relationType": {
+                    "$ref": "#/components/schemas/RelationType"
+                  }
+                }
+              },
+              "encoding": {
+                "fromId": {
+                  "style": "form"
+                },
+                "toId": {
+                  "style": "form"
+                },
+                "relationType": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/{fromId}/removeRelation/{toId}": {
+      "delete": {
+        "tags": [
+          "PhysicalPerson"
+        ],
+        "parameters": [
+          {
+            "name": "fromId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "toId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/{personId}": {
+      "get": {
+        "tags": [
+          "PhysicalPerson"
+        ],
+        "parameters": [
+          {
+            "name": "personId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/PhysicalPerson/quickSearch/{query}/{pageNumber}/{pageSize}": {
+      "get": {
+        "tags": [
+          "PhysicalPerson"
+        ],
+        "parameters": [
+          {
+            "name": "query",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/detailedSearch": {
+      "get": {
+        "tags": [
+          "PhysicalPerson"
+        ],
+        "parameters": [
+          {
+            "name": "Firstname",
+            "in": "query",
+            "schema": {
+              "pattern": "^(?:[A-Za-z]+|[ა-ჰ]+)$",
+              "type": "string"
+            }
+          },
+          {
+            "name": "Lastname",
+            "in": "query",
+            "schema": {
+              "pattern": "^(?:[A-Za-z]+|[ა-ჰ]+)$",
+              "type": "string"
+            }
+          },
+          {
+            "name": "Gender",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/Gender"
+            }
+          },
+          {
+            "name": "PersonalId",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "BirthDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "ImagePath",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "City",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "PhoneNumber",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "PageNumber",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/relatedInfo": {
+      "get": {
+        "tags": [
+          "PhysicalPerson"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/{personId}/profilePicture": {
+      "post": {
+        "tags": [
+          "PhysicalPerson"
+        ],
+        "parameters": [
+          {
+            "name": "personId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "image": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              },
+              "encoding": {
+                "image": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "PhysicalPerson"
+        ],
+        "parameters": [
+          {
+            "name": "personId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/{personId}/profilePicture/remove": {
+      "post": {
+        "tags": [
+          "PhysicalPerson"
+        ],
+        "parameters": [
+          {
+            "name": "personId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Gender": {
+        "enum": [
+          "Male",
+          "Female"
+        ],
+        "type": "string"
+      },
+      "PhoneNumberDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/PhoneNumberType"
+          },
+          "number": {
+            "maxLength": 50,
+            "minLength": 4,
+            "pattern": "^[0-9]+$",
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PhoneNumberType": {
+        "enum": [
+          "Home",
+          "Work",
+          "Mobile"
+        ],
+        "type": "string"
+      },
+      "RelationType": {
+        "enum": [
+          "Colleague",
+          "Friend",
+          "Relative",
+          "Other"
+        ],
+        "type": "string"
+      },
+      "UpdatePhoneNumberDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/PhoneNumberType"
+          },
+          "number": {
+            "maxLength": 50,
+            "minLength": 4,
+            "pattern": "^[0-9]+$",
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}

@@ -4,7 +4,7 @@ using Shared.Abstractions;
 using Shared.Infrastructure;
 
 
-namespace LibraryManagement
+namespace DAL
 {
     public class UnitOfWork : IUnitOfWork
     {

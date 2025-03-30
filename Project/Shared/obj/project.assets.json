@@ -894,11 +894,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\abu21\\OneDrive\\Desktop\\CREDO\\A\\Assignments\\Project\\Giorgi_Abuladze\\Project\\Shared\\Shared.csproj",
+      "projectUniqueName": "C:\\Users\\abu21\\OneDrive\\Desktop\\CREDO\\CredoProject\\Project\\Shared\\Shared.csproj",
       "projectName": "Shared",
-      "projectPath": "C:\\Users\\abu21\\OneDrive\\Desktop\\CREDO\\A\\Assignments\\Project\\Giorgi_Abuladze\\Project\\Shared\\Shared.csproj",
+      "projectPath": "C:\\Users\\abu21\\OneDrive\\Desktop\\CREDO\\CredoProject\\Project\\Shared\\Shared.csproj",
       "packagesPath": "C:\\Users\\abu21\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\abu21\\OneDrive\\Desktop\\CREDO\\A\\Assignments\\Project\\Giorgi_Abuladze\\Project\\Shared\\obj\\",
+      "outputPath": "C:\\Users\\abu21\\OneDrive\\Desktop\\CREDO\\CredoProject\\Project\\Shared\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
